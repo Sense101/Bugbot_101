@@ -10,6 +10,7 @@
   "license": "ISC",
   "keywords": [],
   "dependencies": {
+    "discord-reply": "^0.1.2",
     "discord.js": "^12.5.3"
   }
 }

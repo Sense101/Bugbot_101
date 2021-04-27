@@ -1,31 +1,20 @@
-const { Message, Collection } = require(`discord.js`);
+const { Message } = require(`discord.js`);
+const { addLog } = require("./logs");
 
 module.exports = {
     name: `warn`,
-    usage: `[member] [reason]`,
+    usage: `{user} {reason?}`,
     permission: `MANAGE_MESSAGES`,
     argsEnd: 1,
-    cooldown: 10,
-    description: `Warns the user and adds the warning to the logs`,
+    description: `Use to warn users when they are doing something against the rules.`,
     
     execute(/** @type {Message}*/ msg, args) {
-        const { logs } = msg.client;
-        const member = msg.mentions.members.first();
+        const member = msg.mentions.members.first() || msg.guild.members.cache.get(args[0]);
         if (!member) return msg.reply("please @mention who you want to warn.")
 
-        /** @type {string[]}*/
-        let currentWarns = [];
-        if (!logs.has(member.id)) {
-            logs.set(member.id, new Collection());
-        }
-        const memberLogs = logs.get(member.id);
-        if (memberLogs.has("warns")) {
-            currentWarns = memberLogs.get("warns");
-        }
-        const reason = args[1] || `no reason whatsoever`;
-        currentWarns.push(reason);
-        memberLogs.set(member.id, currentWarns);
+        const reason = args[1] || `no reason specified`;
+        addLog(member.id, `warns`, reason, msg.client);
 
-        member.send(`You were warned on ${msg.guild.name} for ${reason.toLowerCase()}.`);
+        member.send(`You were warned on ${msg.guild.name}. Reason: ${reason}.`);
 	},
 };
