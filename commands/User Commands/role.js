@@ -8,11 +8,15 @@ module.exports = {
     usage: `{role} {role} ...`,
     description: `Gives or removes roles. Send ${prefix}role to see all available roles.`,
     
-    execute(/** @type {Message}*/ msg, /** @type {string[]}*/ args) {
+    /**
+     * @param {Message} msg 
+     * @param {string[]} args 
+     */
+    execute: async (msg, args) => {
         const member = msg.member;
 
+        if (!args.length) return await msg.reply(this.getRoleEmbed(msg.guild));
 
-        if (!args.length) return msg.reply(this.getRoleEmbed(msg.guild));
         let reply = `${member}\n`;
         for (let i = 0; i < args.length; ++i) {
             const noPing = args[i].replace(/>/g, `\\>`);
@@ -25,6 +29,7 @@ module.exports = {
                 continue;
             }
             const rolename = role.name;
+
             //check if the user has permission
             const isAdmin = member.hasPermission("ADMINISTRATOR");
             if (!isAdmin && (role.hexColor != `#000000` || role.managed)) {
@@ -46,16 +51,18 @@ module.exports = {
                 reply += `Added you to ${rolename}.\n`;
             }
         }
-        msg.channel.send(reply);
+        await msg.channel.send(reply);
     },
 
-    getRoleEmbed(/** @type {Guild} */ guild) {
+    async getRoleEmbed(/** @type {Guild} */ guild) {
         const roles = guild.roles.cache.array().filter(r => r.hexColor == `#000000`)
             .filter(r => r.name != "@everyone" && !r.managed);
         const names = roles.map(r => r.name);
 
-        const roleEmbed = new MessageEmbed().setColor(guild.me.displayHexColor)
-            .setTitle(`Available Roles`).setDescription(`Add the role names after the role command. Not case-sensitive.`);
+        const roleEmbed = new MessageEmbed()
+            .setColor(guild.me.displayHexColor)
+            .setTitle(`Available Roles`)
+            .setDescription(`Add the role names after the role command. Not case-sensitive.`);
         roleEmbed.addField("Mod Discussion Roles", `*` + names.join(`*, *`) + `*`, true);
         return roleEmbed;
     }

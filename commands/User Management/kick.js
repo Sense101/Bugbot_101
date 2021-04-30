@@ -8,17 +8,21 @@ module.exports = {
     argsEnd: 1,
     description: `Close the door behind you.`,
     
-    execute(/** @type {Message}*/ msg, args) {
+    /**
+     * @param {Message} msg 
+     * @param {string[]} args 
+     */
+    execute: async ( msg, args) => {
         const member = msg.mentions.members.first() || msg.guild.members.cache.get(args[0]);
-        if (!member) return msg.reply("please @mention who you want to kick.")
+        if (!member) return await msg.reply("please @mention who you want to kick.")
 
         const kickable = !member.hasPermission(`MANAGE_MESSAGES`);
-        if(!kickable) return msg.reply("seems I can't kick that user.")
+        if (!kickable) return await msg.reply("seems I can't kick that user.")
+        
         const reason = args[1] || `no reason specified`;
         addLog(member.id, `kicks`, reason, msg.client);
 
-        member.send(`You were kicked from ${msg.guild.name}. Reason: ${reason}.`).then(() => {
-            member.kick(reason);
-        });
+        await member.send(`You were kicked from ${msg.guild.name}. Reason: ${reason}.`);
+        await member.kick(reason);
 	},
 };

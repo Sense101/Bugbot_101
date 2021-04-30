@@ -7,7 +7,7 @@ module.exports = {
     description: `Clears the specified number of messages from the channel.`,
     
     execute(/** @type {Message}*/ msg, args) {
-        const amount = math.max(parseInt(args[0]) + 1, 11);
+        const amount = Math.min(parseInt(args[0]) + 1, 11);
         if (isNaN(amount)) {
 		    return msg.reply('please specify an amount to clear');
         }
