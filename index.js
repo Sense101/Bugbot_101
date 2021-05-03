@@ -31,6 +31,7 @@ client.logs = logs || [
     { id: `bans`, logs: [] },
 ];
 
+let bugprints = parseInt(fs.readFileSync(`bugprints.txt`)) || 0;
 
 function loadCommands() {
     //find all commands
@@ -47,7 +48,7 @@ function loadCommands() {
 
 client.once("ready", async () => {
     loadCommands();
-    setPresence();
+    await setPresence();
     console.log("Running!");
 });
 
@@ -61,20 +62,29 @@ client.on("message", async msg => {
     const command = client.commands.get(commandName);
     if (!command) return;
 
-    //put end arguments together
-    if (command.argsEnd && args.length > command.argsEnd + 1) {
-        let newArgs = [];
-        for (let i = 0; i < command.argsEnd; ++i){
-            newArgs.push(args.shift());
-        }
-        newArgs.push(args.join(` `));
-        args = newArgs;
+    //redo args
+    if (command.argWrap) {
+        const fullArgs = msg.content.slice(prefix.length + command.name.length).trim();
+        const startIndex = fullArgs.indexOf(command.argWrap[0]);
+        const endIndex = fullArgs.lastIndexOf(command.argWrap[1]);
+
+        args = fullArgs.slice(startIndex + command.argWrap[0].length, endIndex)
+            .split(new RegExp(`\\${command.argWrap[1]} +\\${command.argWrap[0]}`));
     }
 
-    //set all to one argument
-    if (command.noArgs) {
-        args.length = 1;
-        args[0] = msg.content.slice(prefix.length + command.name.length).trim();
+    //change arguments based on command
+    if (command.argsEnd) {
+        if (command.argsEnd <= 0) {
+            args.length = 1;
+            args[0] = msg.content.slice(prefix.length + command.name.length).trim();
+        } else if (args.length > command.argsEnd + 1) {
+            let newArgs = [];
+            for (let i = 0; i < command.argsEnd; ++i){
+                newArgs.push(args.shift());
+            }
+            newArgs.push(args.join(` `));
+            args = newArgs;
+        }
     }
     
     //check for permission
@@ -106,8 +116,8 @@ client.on(`message`, async msg => {
         } catch {
             console.log(`Failed to add bugprint reaction to message!`);
         }
-        const newBugprints =  parseInt(fs.readFileSync(`bugprints.txt`)) + 1;
-        fs.writeFileSync("bugprints.txt",  newBugprints.toString());
+        bugprints++;
+        fs.writeFileSync("bugprints.txt",  bugprints.toString());
         await setPresence();
     }
 })
@@ -115,7 +125,6 @@ client.on(`message`, async msg => {
 client.login(token);
 
 async function setPresence() {
-    const bugprints = parseInt(fs.readFileSync(`bugprints.txt`));
     const description = bugprints == 1 ? `bugprint` : `bugprints`;
     await client.user.setPresence({
         activity: {

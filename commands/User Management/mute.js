@@ -6,7 +6,7 @@ module.exports = {
     guild: `shapez.io Modding Server`,
     permission: `MANAGE_MESSAGES`,
     argsEnd: 2,
-    usage: `{user} {time in minutes} {reason?}`,
+    usage: `|user| |time in minutes| |reason?|`,
     description: `Someone spamming? With this, you can shut them up!`,
     
     /**

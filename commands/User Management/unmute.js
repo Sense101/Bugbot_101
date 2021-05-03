@@ -4,7 +4,7 @@ module.exports = {
     name: `unmute`,
     guild: `shapez.io Modding Server`,
     permission: `MANAGE_MESSAGES`,
-    usage: `{user}`,
+    usage: `|user|`,
     description: `Use this to unmute an innocent user.`,
     
     /**

@@ -4,7 +4,7 @@ const { Message } = require(`discord.js`);
 
 module.exports = {
     name: `clearlogs`,
-    usage: `{user id} {log name} {log index?}`,
+    usage: `|user id| |log name| |log index?|`,
     description: `Use to clear user logs.`,
 
     permission: `MANAGE_MESSAGES`,

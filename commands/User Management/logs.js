@@ -4,7 +4,7 @@ const { Message, Collection, Client } = require(`discord.js`);
 
 module.exports = {
     name: `logs`,
-    usage: `{member id} {log name?}`,
+    usage: `|user id| |log name?|`,
     description: `Use to access the logs of a user.`,
 
     permission: `MANAGE_MESSAGES`,

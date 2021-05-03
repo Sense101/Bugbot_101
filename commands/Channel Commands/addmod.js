@@ -2,12 +2,13 @@ const { Message } = require(`discord.js`);
 
 module.exports = {
     name: `addmod`,
-    usage: `{role name}`,
-    description: `Adds a new mod discussion channel which is limited to the roles`,
-    noArgs: true,
+    usage: `|mod name|`,
+    description: `Adds a new mod discussion channel plus a new role for that mod.`,
 
     guild: `shapez.io Modding Server`,
     permission: `ADMINISTRATOR`,
+
+    argsEnd: 0,
 
     
     /**
@@ -25,7 +26,6 @@ module.exports = {
             data: {
                 name: roleName,
                 color: `#000000`,
-                mentionable: true,
             }
         });
         

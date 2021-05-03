@@ -3,7 +3,7 @@ const { addLog } = require("./logs");
 
 module.exports = {
     name: `warn`,
-    usage: `{user} {reason?}`,
+    usage: `|user| |reason?|`,
     description: `Use to warn users when they are doing something against the rules.`,
 
     permission: `MANAGE_MESSAGES`,

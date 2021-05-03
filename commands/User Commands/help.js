@@ -3,7 +3,7 @@ const { prefix } = require('../../config.json');
 
 module.exports = {
     name: 'help',
-    usage: `{command?}`,
+    usage: `|command?|`,
     description: 'Gives information about the commands you can use.',
     
     channels: [`role-commands`, `bot-testing`],
@@ -27,28 +27,27 @@ module.exports = {
             }
         }
 
+        const helpEmbed = new MessageEmbed().setColor(msg.guild.me.roles.highest.color);
         if (!args[0]) {
-            const helpEmbed = new MessageEmbed()
-                .setTitle('Available Commands')
-                .setDescription(`*type ${prefix} before a command to run it.*`)
-                .setFooter(`Send '${prefix}help {command name}' to get info on a specific command!`)
-                .setColor(msg.guild.me.roles.highest.color);
+            helpEmbed.setTitle('Available Commands');
+            helpEmbed.setDescription(`*type ${prefix} before a command to run it.*`);
+            helpEmbed.setFooter(`Send '${prefix}help |command name|' to get info on a specific command!`);
 
             let text = ``;
             for (let i = 0; i < availableCommands.length; ++i) {
                 const command = availableCommands[i];
-                const usage = ` ` + command.usage || ``;
+                const usage = command.usage || ``;
                 
                 for (let i = 0; i < command.aliases ? command.aliases.length : 0; ++i) {
                     text += `\n` + command.aliases[i] + usage;
                 }
-                text += `\n\n` + command.name + usage;
+                text += `\n\n **${command.name}** ${usage}`;
             }
-            helpEmbed.addField(`Commands`, text);
+            helpEmbed.addField(`** **`, text);
             await msg.channel.send(helpEmbed);
         } else {
             const command = availableCommands.find(cmd => cmd.name === args[0])
-            if (!command) return msg.reply(`invalid command.`);
+            if (!command) return await msg.reply(`invalid command.`);
             
             const helpEmbed = new MessageEmbed()
                 .setTitle(prefix + command.name)

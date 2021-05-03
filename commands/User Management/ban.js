@@ -3,7 +3,7 @@ const { addLog } = require("./logs");
 
 module.exports = {
     name: `ban`,
-    usage: `{user} {reason?}`,
+    usage: `|user| |reason?|`,
     permission: `MANAGE_MESSAGES`,
     argsEnd: 1,
     description: `The ban hammer shows no mercy.`,
@@ -26,7 +26,7 @@ module.exports = {
         `You are permanently banned from ${msg.guild.name}. Reason: ${reason}.`,
         `If you feel your ban was unfair, or want to appeal, message a mod on the main server.`
         ].join("\n");
-        
+
         await member.send(notif);
         await member.ban(reason);
 	},

@@ -3,7 +3,7 @@ const { Message } = require(`discord.js`);
 module.exports = {
     name: `clear`,
     permission: `MANAGE_MESSAGES`,
-    usage: `{number to clear}`,
+    usage: `|number to clear|`,
     description: `Clears the specified number of messages from the channel.`,
     
     execute(/** @type {Message}*/ msg, args) {

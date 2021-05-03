@@ -3,7 +3,7 @@ const { addLog } = require("./logs");
 
 module.exports = {
     name: `kick`,
-    usage: `{user} {reason?}`,
+    usage: `|user| |reason?|`,
     permission: `MANAGE_MESSAGES`,
     argsEnd: 1,
     description: `Close the door behind you.`,

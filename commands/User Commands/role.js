@@ -5,7 +5,7 @@ module.exports = {
     name: `role`,
     aliases: [`roles`],
     channels: ["role-commands", "bot-testing"],
-    usage: `{role} {role} ...`,
+    usage: `|role| |role| ...`,
     description: `Gives or removes roles. Send ${prefix}role to see all available roles.`,
     
     /**
@@ -15,7 +15,8 @@ module.exports = {
     execute: async (msg, args) => {
         const member = msg.member;
 
-        if (!args.length) return await msg.reply(this.getRoleEmbed(msg.guild));
+        const embed = getRoleEmbed(msg.guild);
+        if (!args.length) { await msg.channel.send(embed); return; }
 
         let reply = `${member}\n`;
         for (let i = 0; i < args.length; ++i) {
@@ -54,16 +55,18 @@ module.exports = {
         await msg.channel.send(reply);
     },
 
-    async getRoleEmbed(/** @type {Guild} */ guild) {
-        const roles = guild.roles.cache.array().filter(r => r.hexColor == `#000000`)
-            .filter(r => r.name != "@everyone" && !r.managed);
-        const names = roles.map(r => r.name);
-
-        const roleEmbed = new MessageEmbed()
-            .setColor(guild.me.displayHexColor)
-            .setTitle(`Available Roles`)
-            .setDescription(`Add the role names after the role command. Not case-sensitive.`);
-        roleEmbed.addField("Mod Discussion Roles", `*` + names.join(`*, *`) + `*`, true);
-        return roleEmbed;
-    }
+    
 };
+
+function getRoleEmbed(/** @type {Guild} */ guild) {
+    const roles = guild.roles.cache.array().filter(r => r.hexColor == `#000000`)
+        .filter(r => r.name != "@everyone" && !r.managed);
+    const names = roles.map(r => r.name);
+
+    const roleEmbed = new MessageEmbed()
+        .setColor(guild.me.displayColor)
+        .setTitle(`Available Roles`)
+        .setDescription(`Add the role names after the role command. Not case-sensitive.`);
+    roleEmbed.addField("Mod Discussion Roles", `*` + names.join(`*, *`) + `*`);
+    return roleEmbed;
+}
