@@ -15,19 +15,18 @@ module.exports = {
 	execute: async (msg, args) => {
         const { commands } = msg.client;
 
-        const isAllAvailable = msg.member.hasPermission("MANAGE_MESSAGES");
         let availableCommands = commands.array();
 
-        if (!isAllAvailable) {
-            for (let i = 0; i < availableCommands.length; ++i) {
-                if (availableCommands[i].permission) {
-                    availableCommands.splice(i, 1);
-                    i--;
-                }
+        for (let i = 0; i < availableCommands.length; ++i) {
+            const perm = availableCommands[i].permission;
+            if (perm && !msg.member.hasPermission(perm)) {
+                availableCommands.splice(i, 1);
+                i--;
             }
         }
+        
 
-        const helpEmbed = new MessageEmbed().setColor(msg.guild.me.roles.highest.color);
+        const helpEmbed = new MessageEmbed().setColor(msg.guild.me.displayColor);
         if (!args[0]) {
             helpEmbed.setTitle('Available Commands');
             helpEmbed.setDescription(`*type ${prefix} before a command to run it.*`);
@@ -38,10 +37,7 @@ module.exports = {
                 const command = availableCommands[i];
                 const usage = command.usage || ``;
                 
-                for (let i = 0; i < command.aliases ? command.aliases.length : 0; ++i) {
-                    text += `\n` + command.aliases[i] + usage;
-                }
-                text += `\n\n **${command.name}** ${usage}`;
+                text += `\n **${command.name}** ${usage}`;
             }
             helpEmbed.addField(`** **`, text);
             await msg.channel.send(helpEmbed);
@@ -50,6 +46,7 @@ module.exports = {
             if (!command) return await msg.reply(`invalid command.`);
             
             const helpEmbed = new MessageEmbed()
+                .setColor(msg.guild.me.displayColor)
                 .setTitle(prefix + command.name)
                 .addField(`${command.name} ${command.usage || ``}`, command.description);
             await msg.channel.send(helpEmbed);

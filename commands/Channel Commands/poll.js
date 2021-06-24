@@ -13,7 +13,7 @@ module.exports = {
     description: `Creates a reaction poll between up to 10 different options.`,
 
     permission: `MENTION_EVERYONE`,
-    channels: [`polls`, `bot-testing`],
+    channels: [`polls`, `bot-testing`, `💬surveys`, `beta-surveys`],
 
     argWrap: [`[`, `]`],
     
